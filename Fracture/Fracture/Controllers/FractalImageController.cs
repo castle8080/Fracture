@@ -8,23 +8,28 @@ using System.Threading.Tasks;
 using Fracture.Fractal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Fracture.Controllers
 {
     [Produces("application/json")]
-    [Route("api/FractalImage")]
+    [Route("api/image")]
     public class FractalImageController : Controller
     {
 
         [HttpGet]
-        public FileContentResult Get([FromQuery] FractalImageInput input)
+        public async Task Get([FromQuery] FractalImageSettings input)
         {
             Console.WriteLine(input.ToString());
             var fgen = new MandelbrotGenerator();
             var image = fgen.Generate(input);
 
-            var result = new FileContentResult(image, "image/png");
-            return result;
+            var imageProperties = JsonConvert.SerializeObject(input);
+
+            var response = this.HttpContext.Response;
+            response.Headers.Add("X-GeneratedImageProperties", imageProperties);
+            response.ContentType = "image/png";
+            await response.Body.WriteAsync(image, 0, image.Length);
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Fracture.Controllers
 {
-    public class FractalImageInput
+    public class FractalImageSettings
     {
         public string Fractal { get; set; }
 
@@ -19,12 +19,12 @@ namespace Fracture.Controllers
 
         public double Zoom { get; set; }
 
-        public FractalImageInput()
+        public FractalImageSettings()
         {
             Fractal = "mandelbrot";
             PixelWidth = 400;
             PixelHeight = 400;
-            OriginX = 0;
+            OriginX = -0.75;
             OriginY = 0;
             Zoom = 1;
         }

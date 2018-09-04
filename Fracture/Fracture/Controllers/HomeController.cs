@@ -21,8 +21,6 @@ namespace Fracture.Controllers
             this.env = env;
         }
 
-
-
         [Route("index.html"), Route("")]
         public ContentResult Index()
         {
@@ -38,6 +36,7 @@ namespace Fracture.Controllers
                     "<head>\n" +
                     "<meta charset = 'UTF-8'>\n" +
                     "<title>Fracture</title>\n" +
+                    "<link rel='stylesheet' href='style/fracture.css'>\n" +
                     GetJavaScriptContent() + "\n" +
                     GetTemplateContent() + "\n" +
                     "</head>\n" +

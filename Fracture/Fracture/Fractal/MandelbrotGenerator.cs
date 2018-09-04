@@ -14,7 +14,7 @@ namespace Fracture.Fractal
 {
     public class MandelbrotGenerator
     {
-        public byte[] Generate(FractalImageInput input)
+        public byte[] Generate(FractalImageSettings input)
         {
             int width = input.PixelWidth;
             int height = input.PixelHeight;
@@ -30,8 +30,6 @@ namespace Fracture.Fractal
                     {
                         var pos = f(Tuple.Create(wp, hp));
                         image[wp, hp] = color(pos);
-
-                        //image[wp, hp] = ((hp + (wp % 2)) % 2) == 0 ? Rgba32.Black : Rgba32.White;
                     }
                 }
                 return ToPng(image);
@@ -66,9 +64,10 @@ namespace Fracture.Fractal
             };
         }
 
-        private Func<Tuple<int, int>, Tuple<double, double>> MakeConverter(FractalImageInput input)
+        private Func<Tuple<int, int>, Tuple<double, double>> MakeConverter(FractalImageSettings input)
         {
-            var tx = CoordinateTransformer.CreatePixelTransformer(input.PixelWidth, input.PixelHeight, input.OriginX, input.OriginY, 3);
+            var logicalXWidth = 3.0 * input.Zoom;
+            var tx = CoordinateTransformer.CreatePixelTransformer(input.PixelWidth, input.PixelHeight, input.OriginX, input.OriginY, logicalXWidth);
             return (pixPos) => tx.TransformToLocal(pixPos.Item1, pixPos.Item2);
         }
 
