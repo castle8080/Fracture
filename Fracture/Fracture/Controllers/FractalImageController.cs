@@ -16,19 +16,27 @@ namespace Fracture.Controllers
     [Route("api/image")]
     public class FractalImageController : Controller
     {
+        const string GeneratedImagePropertiesKey = "X-GeneratedImageProperties";
+        const string MimeTypePNG = "images/png";
 
+        /// <summary>
+        /// Generates a fractal image.
+        /// </summary>
         [HttpGet]
         public async Task Get([FromQuery] FractalImageSettings input)
         {
             Console.WriteLine(input.ToString());
+            var response = this.HttpContext.Response;
+
+            // Generate the image
             var fgen = new MandelbrotGenerator();
             var image = fgen.Generate(input);
 
+            // Get the image properties and add them to the response header.
             var imageProperties = JsonConvert.SerializeObject(input);
+            response.Headers.Add(GeneratedImagePropertiesKey, imageProperties);
 
-            var response = this.HttpContext.Response;
-            response.Headers.Add("X-GeneratedImageProperties", imageProperties);
-            response.ContentType = "image/png";
+            response.ContentType = MimeTypePNG;
             await response.Body.WriteAsync(image, 0, image.Length);
         }
     }
