@@ -22,6 +22,8 @@ namespace Fracture.Fractal
             var f = MakeConverter(input);
             var color = MakeBasicColorizer();
 
+            var start = DateTime.Now;
+
             using (Image<Rgba32> image = new Image<Rgba32>(width, height))
             {
                 for (int wp = 0; wp < width; wp++)
@@ -32,7 +34,10 @@ namespace Fracture.Fractal
                         image[wp, hp] = color(pos);
                     }
                 }
-                return ToPng(image);
+                Console.WriteLine($"Generated raw image: {(DateTime.Now - start).TotalSeconds}");
+                var result = ToPng(image);
+                Console.WriteLine($"Encoded as PNG: {(DateTime.Now - start).TotalSeconds}");
+                return result;
             }
         }
 
@@ -66,8 +71,7 @@ namespace Fracture.Fractal
 
         private Func<Tuple<int, int>, Tuple<double, double>> MakeConverter(FractalImageSettings input)
         {
-            var logicalXWidth = 3.0 * input.Zoom;
-            var tx = CoordinateTransformer.CreatePixelTransformer(input.PixelWidth, input.PixelHeight, input.OriginX, input.OriginY, logicalXWidth);
+            var tx = CoordinateTransformer.CreatePixelTransformer(input.PixelWidth, input.PixelHeight, input.OriginX, input.OriginY, input.LogicalWidth);
             return (pixPos) => tx.TransformToLocal(pixPos.Item1, pixPos.Item2);
         }
 

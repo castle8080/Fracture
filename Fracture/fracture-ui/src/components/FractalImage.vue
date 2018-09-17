@@ -7,10 +7,27 @@
   >
 </template>
 <script>
+import _ from 'lodash'
+import CoordinateTransformer from '../util/CoordinateTransformer'
+
 export default {
+
   name: 'FractalImage',
+  
+  data: function () {
+    return {
+      imageProperties: {
+        PixelWidth: 400,
+        PixelHeight: 400,
+        OriginX: -0.75,
+        OriginY: 0,
+        LogicalWidth: 3
+      }
+    };
+  },
+
   created: function () {
-    console.log(this.$store.image);
+    console.log(this.$store);
     this.loadImage();
   },
 
@@ -18,19 +35,36 @@ export default {
 
     onImageClick(e) {
       console.log(e);
-      var x = e.offsetX;
-      var y = e.offsetY;
+      var args = {};
+      if (this.imageProperties != null)
+      {
+        // TODO: Add shift of origin here as well.
+        args = _.assign({}, this.imageProperties);
+        args.LogicalWidth = args.LogicalWidth * 0.75;
+      }
+      this.loadImage(args);
+      console.log(args);
     },
 
-    loadImage() {
+    loadImage(args) {
+      if (!args) {
+        args = {};
+      }
+      var uri = "api/image?" +
+        _.map(args, (v,k) => encodeURIComponent(k) + "=" + encodeURIComponent(v))
+        .join("&");
+
+      console.log("About to load: ", uri);
+
       var xhr = new XMLHttpRequest();
-      xhr.open("GET", "api/image", true);
+      xhr.open("GET", uri, true);
       xhr.responseType = "blob";
       xhr.onload = e => this.imageRequestCallback(e);
       xhr.send();
     },
 
     imageRequestCallback(e) {
+      // I couldn't read HTTP response headers using the fetch API.
       var xhr = e.target;
       if (xhr.readyState == 4) {
         if (xhr.status == 200) {
@@ -46,6 +80,7 @@ export default {
 
     onImageRetrieved(image, props) {
       console.log("Image: ", props, image);
+      this.imageProperties = props;
       this.$refs.image.src = URL.createObjectURL(image);
     }
   }

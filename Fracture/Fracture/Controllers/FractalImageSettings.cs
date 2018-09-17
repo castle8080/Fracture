@@ -17,7 +17,7 @@ namespace Fracture.Controllers
 
         public double OriginY { get; set; }
 
-        public double Zoom { get; set; }
+        public double LogicalWidth { get; set; }
 
         public FractalImageSettings()
         {
@@ -26,12 +26,12 @@ namespace Fracture.Controllers
             PixelHeight = 400;
             OriginX = -0.75;
             OriginY = 0;
-            Zoom = 1;
+            LogicalWidth = 3.0;
         }
 
         public override string ToString()
         {
-            return $"Fractal={Fractal}, PixelWidth={PixelWidth}, PixelHeight={PixelHeight}, OriginX={OriginX}, OriginY={OriginY} Zoom={Zoom}";
+            return $"Fractal={Fractal}, PixelWidth={PixelWidth}, PixelHeight={PixelHeight}, OriginX={OriginX}, OriginY={OriginY} LogicalWidth={LogicalWidth}";
         }
     }
 }

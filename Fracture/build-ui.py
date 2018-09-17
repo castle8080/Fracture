@@ -38,7 +38,7 @@ class UIBuilder:
   def copy_dist(self):
     if os.path.isdir(self.www_root_dir):
       print("Removing old distribution.")
-      shutil.rmtree(self.www_root_dir)
+      shutil.rmtree(self.www_root_dir, True)
     print("Copying distribution.")
     shutil.copytree(self.ui_dist_dir, self.www_root_dir)
 
@@ -46,7 +46,8 @@ class UIBuilder:
     start_time = datetime.datetime.now()
     self.build_fracture_ui()
     exec_time = datetime.datetime.now() - start_time
-    print("Build time: {}".format(exec_time.total_seconds()))
+    print("Build Complete[{}]: Seconds {}".format(datetime.datetime.now().isoformat(), exec_time.total_seconds()))
+
     self.copy_dist()
 
   def do_build(self):

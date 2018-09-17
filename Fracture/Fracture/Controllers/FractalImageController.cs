@@ -29,8 +29,10 @@ namespace Fracture.Controllers
             var response = this.HttpContext.Response;
 
             // Generate the image
+            var start = DateTime.Now;
             var fgen = new MandelbrotGenerator();
             var image = fgen.Generate(input);
+            Console.WriteLine($"Seconds: {(DateTime.Now - start).TotalSeconds}.");
 
             // Get the image properties and add them to the response header.
             var imageProperties = JsonConvert.SerializeObject(input);
