@@ -33,6 +33,13 @@ export default {
 
   methods: {
 
+    getCoordinateTransformer() {
+        return CoordinateTransformer.createPixelTransformer(
+          this.imageProperties.PixelWidth, this.imageProperties.PixelHeight,
+          this.imageProperties.OriginX, this.imageProperties.OriginY,
+          this.impageProperties.LogicalWidth);
+    },
+
     onImageClick(e) {
       console.log(e);
       var args = {};
@@ -40,6 +47,10 @@ export default {
       {
         // TODO: Add shift of origin here as well.
         args = _.assign({}, this.imageProperties);
+
+        var ct = this.getCoordinateTransformer();
+
+
         args.LogicalWidth = args.LogicalWidth * 0.75;
       }
       this.loadImage(args);
