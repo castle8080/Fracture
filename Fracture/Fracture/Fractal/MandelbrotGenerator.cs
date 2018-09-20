@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using System.IO;
+using System.Diagnostics;
 
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -23,6 +24,7 @@ namespace Fracture.Fractal
             var color = MakeBasicColorizer();
 
             var start = DateTime.Now;
+            var sw = new Stopwatch();
 
             using (Image<Rgba32> image = new Image<Rgba32>(width, height))
             {
@@ -31,9 +33,12 @@ namespace Fracture.Fractal
                     for (int hp = 0; hp < height; hp++)
                     {
                         var pos = f(Tuple.Create(wp, hp));
+                        sw.Start();
                         image[wp, hp] = color(pos);
+                        sw.Stop();
                     }
                 }
+                Console.WriteLine($"Mandelbrot run: {sw.ElapsedMilliseconds} ms.");
                 Console.WriteLine($"Generated raw image: {(DateTime.Now - start).TotalSeconds}");
                 var result = ToPng(image);
                 Console.WriteLine($"Encoded as PNG: {(DateTime.Now - start).TotalSeconds}");
@@ -50,21 +55,22 @@ namespace Fracture.Fractal
                 var maxIteration = 1000;
                 var iteration = 0;
 
-                while (iteration < maxIteration && x * x + y * y < 4)
+                while(true)
                 {
-                    var xtemp = x * x - y * y + pixPos.Item1;
+                    var x2 = x * x;
+                    var y2 = y * y;
+                    if (iteration >= maxIteration)
+                    {
+                        return Rgba32.Black; 
+                    }
+                    else if (x2 + y2 >= 4)
+                    {
+                        return Rgba32.White;
+                    }
+                    var xtemp = x2 - y2 + pixPos.Item1;
                     y = 2 * x * y + pixPos.Item2;
                     x = xtemp;
                     iteration++;
-                }
-
-                if (iteration >= maxIteration)
-                {
-                    return Rgba32.Black;
-                }
-                else
-                {
-                    return Rgba32.White;
                 }
             };
         }

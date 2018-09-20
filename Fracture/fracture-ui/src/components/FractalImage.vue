@@ -37,7 +37,7 @@ export default {
         return CoordinateTransformer.createPixelTransformer(
           this.imageProperties.PixelWidth, this.imageProperties.PixelHeight,
           this.imageProperties.OriginX, this.imageProperties.OriginY,
-          this.impageProperties.LogicalWidth);
+          this.imageProperties.LogicalWidth);
     },
 
     onImageClick(e) {

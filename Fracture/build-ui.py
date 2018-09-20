@@ -5,18 +5,23 @@ import os.path
 import shutil
 import time
 import sys
-import watchdog
-import watchdog.observers
+
 
 # Automates running the static ui build and copying
 # it into the .Net project.
 
-class CallbackHandler(watchdog.events.FileSystemEventHandler):
-  def __init__(self, callback):
-    self.callback = callback
+try:
+  import watchdog
+  import watchdog.observers
 
-  def on_any_event(self, e):
-    self.callback(e)
+  class CallbackHandler(watchdog.events.FileSystemEventHandler):
+    def __init__(self, callback):
+      self.callback = callback
+    def on_any_event(self, e):
+      self.callback(e)
+except:
+  print("Couldn't load watchdog.")
+
 
 class UIBuilder:
 
